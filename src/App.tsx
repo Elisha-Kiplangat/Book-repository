@@ -11,7 +11,7 @@ const App: React.FC = () => {
     <div className="app-container">
       <h1>My Book Collection</h1>
       <Form dispatch={dispatch} />
-      <BookList books={state.books} />
+      <BookList books={state.books} dispatch={dispatch} />
     </div>
   );
 };

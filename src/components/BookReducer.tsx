@@ -26,6 +26,11 @@ const BookReducer = (state: State, action: Action): State => {
         ...state,
         books: [...state.books, newBook],
       };
+      case 'DELETE_BOOK':
+      return {
+        ...state,
+        books: state.books.filter((book) => book.id !== action.payload),
+      };
     default:
       return state;
   }
@@ -40,6 +45,19 @@ export const initialState = {
       title: 'The Great Gatsby',
       author: 'F. Scott Fitzgerald',
       year: '1925'
+    },
+    {
+      id: 2,
+      title: 'The Great Gatsby',
+      author: 'F. Scott Fitzgerald',
+      year: '1925'
+    },
+    {
+      id: 3,
+      title: 'The Great Gatsby',
+      author: 'F. Scott Fitzgerald',
+      year: '1925'
     }
+
   ]
 };
