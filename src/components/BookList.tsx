@@ -1,39 +1,43 @@
+import React from 'react';
+import './BookList.scss';
 
-interface Book {
+export interface Book {
   id: number;
   title: string;
   author: string;
   year: string;
 }
 
-const BookList = () => {
-
-    const books: Book[] = [
-        {
-          id: 1,
-          title: 'The Great Gatsby',
-          author: 'Scot',
-          year: '1925'
-        }
-    ]
-        
-
-  return (
-    <>
-    <div>
-      <h2>Book List</h2>
-      <ul>
-        {books.map(book => (
-          <li key={book.id}>
-            <strong>{book.title}</strong> by {book.author} ({book.year})
-          </li>
-        ))}
-      </ul>
-    </div>
-    </>
-  )
+interface BookListProps {
+  books: Book[];
 }
 
-export default BookList
+const BookList: React.FC<BookListProps> = ({ books }) => {
+  return (
+    <div className="book-list-container">
+      <h2>Book List</h2>
+      <div>
+        <table className="book-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Year</th>
+            </tr>
+          </thead>
+          <tbody>
+            {books.map((book) => (
+              <tr key={book.id}>
+                <td>{book.title}</td>
+                <td>{book.author}</td>
+                <td>{book.year}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
 
-
+export default BookList;
