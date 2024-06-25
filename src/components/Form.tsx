@@ -4,22 +4,19 @@ import './Form.scss';
 interface FormProps {
   dispatch: React.Dispatch<any>;
   bookToEdit?: { id: number; title: string; author: string; year: string } | null;
+  setBookToEdit: React.Dispatch<React.SetStateAction<{ id: number; title: string; author: string; year: string } | null>>;
 }
 
-const Form: React.FC<FormProps> = ({ dispatch, bookToEdit }) => {
+const Form: React.FC<FormProps> = ({ dispatch, bookToEdit, setBookToEdit }) => {
   const titleRef = useRef<HTMLInputElement>(null);
   const authorRef = useRef<HTMLInputElement>(null);
   const yearRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (bookToEdit && titleRef.current && authorRef.current && yearRef.current) {
-      titleRef.current.value = bookToEdit.title;
-      authorRef.current.value = bookToEdit.author;
-      yearRef.current.value = bookToEdit.year;
-    } else {
-      if (titleRef.current) titleRef.current.value = '';
-      if (authorRef.current) authorRef.current.value = '';
-      if (yearRef.current) yearRef.current.value = '';
+    if (bookToEdit) {
+      if (titleRef.current) titleRef.current.value = bookToEdit.title;
+      if (authorRef.current) authorRef.current.value = bookToEdit.author;
+      if (yearRef.current) yearRef.current.value = bookToEdit.year;
     }
   }, [bookToEdit]);
 
@@ -41,6 +38,7 @@ const Form: React.FC<FormProps> = ({ dispatch, bookToEdit }) => {
               year,
             },
           });
+          setBookToEdit(null);  // Clear edit mode
         } else {
           dispatch({
             type: 'ADD_BOOK',

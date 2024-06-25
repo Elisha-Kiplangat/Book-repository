@@ -21,7 +21,7 @@ const BookList: React.FC<BookListProps> = ({ books, dispatch }) => {
 
   return (
     <div className="book-list-container">
-      <Form dispatch={dispatch} bookToEdit={bookToEdit} />
+      <Form dispatch={dispatch} bookToEdit={bookToEdit} setBookToEdit={setBookToEdit} />
       <h2>Book List</h2>
       <div>
         <table className="book-table">
