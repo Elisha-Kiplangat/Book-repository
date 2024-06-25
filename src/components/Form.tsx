@@ -1,43 +1,73 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 import './Form.scss';
 
 interface FormProps {
   dispatch: React.Dispatch<any>;
+  bookToEdit?: { id: number; title: string; author: string; year: string } | null;
 }
 
-const Form: React.FC<FormProps> = ({ dispatch }) => {
-  const [title, setTitle] = useState('');
-  const [author, setAuthor] = useState('');
-  const [year, setYear] = useState('');
+const Form: React.FC<FormProps> = ({ dispatch, bookToEdit }) => {
+  const titleRef = useRef<HTMLInputElement>(null);
+  const authorRef = useRef<HTMLInputElement>(null);
+  const yearRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (bookToEdit && titleRef.current && authorRef.current && yearRef.current) {
+      titleRef.current.value = bookToEdit.title;
+      authorRef.current.value = bookToEdit.author;
+      yearRef.current.value = bookToEdit.year;
+    } else {
+      if (titleRef.current) titleRef.current.value = '';
+      if (authorRef.current) authorRef.current.value = '';
+      if (yearRef.current) yearRef.current.value = '';
+    }
+  }, [bookToEdit]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (title && author && year) {
-      dispatch({
-        type: 'ADD_BOOK',
-        payload: {
-          title,
-          author,
-          year
+    if (titleRef.current && authorRef.current && yearRef.current) {
+      const title = titleRef.current.value;
+      const author = authorRef.current.value;
+      const year = yearRef.current.value;
+
+      if (title && author && year) {
+        if (bookToEdit) {
+          dispatch({
+            type: 'EDIT_BOOK',
+            payload: {
+              id: bookToEdit.id,
+              title,
+              author,
+              year,
+            },
+          });
+        } else {
+          dispatch({
+            type: 'ADD_BOOK',
+            payload: {
+              title,
+              author,
+              year,
+            },
+          });
         }
-      });
-      setTitle('');
-      setAuthor('');
-      setYear('');
+        titleRef.current.value = '';
+        authorRef.current.value = '';
+        yearRef.current.value = '';
+      }
     }
   };
 
   return (
     <div className="form-container">
-      <h2>Add Book</h2>
+      <h2>{bookToEdit ? 'Edit Book' : 'Add Book'}</h2>
       <form onSubmit={handleSubmit}>
         <label htmlFor="title">Title:</label>
         <input
           type="text"
           id="title"
           placeholder="Title"
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          ref={titleRef}
           required
         />
         <label htmlFor="author">Author:</label>
@@ -45,8 +75,7 @@ const Form: React.FC<FormProps> = ({ dispatch }) => {
           type="text"
           id="author"
           placeholder="Author"
-          value={author}
-          onChange={(e) => setAuthor(e.target.value)}
+          ref={authorRef}
           required
         />
         <label htmlFor="year">Year:</label>
@@ -54,11 +83,10 @@ const Form: React.FC<FormProps> = ({ dispatch }) => {
           type="text"
           id="year"
           placeholder="Year"
-          value={year}
-          onChange={(e) => setYear(e.target.value)}
+          ref={yearRef}
           required
         />
-        <button type="submit">Add Book</button>
+        <button type="submit">{bookToEdit ? 'Update Book' : 'Add Book'}</button>
       </form>
     </div>
   );

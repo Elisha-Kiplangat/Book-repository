@@ -1,4 +1,4 @@
-interface Book {
+export interface Book {
   id: number;
   title: string;
   author: string;
@@ -12,6 +12,7 @@ export interface State {
 type Action =
   | { type: 'ADD_BOOK'; payload: { title: string; author: string; year: string } }
   | { type: 'DELETE_BOOK'; payload: number }
+  | { type: 'EDIT_BOOK'; payload: { id: number; title: string; author: string; year: string } };
 
 const BookReducer = (state: State, action: Action): State => {
   switch (action.type) {
@@ -20,16 +21,25 @@ const BookReducer = (state: State, action: Action): State => {
         id: state.books.length + 1,
         title: action.payload.title,
         author: action.payload.author,
-        year: action.payload.year
+        year: action.payload.year,
       };
       return {
         ...state,
         books: [...state.books, newBook],
       };
-      case 'DELETE_BOOK':
+    case 'DELETE_BOOK':
       return {
         ...state,
         books: state.books.filter((book) => book.id !== action.payload),
+      };
+    case 'EDIT_BOOK':
+      return {
+        ...state,
+        books: state.books.map((book) =>
+          book.id === action.payload.id
+            ? { ...book, title: action.payload.title, author: action.payload.author, year: action.payload.year }
+            : book
+        ),
       };
     default:
       return state;

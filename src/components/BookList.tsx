@@ -1,40 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './BookList.scss';
+import { Book } from './BookReducer';
+import Form from './Form';
 
-export interface Book {
-  id: number;
-  title: string;
-  author: string;
-  year: string;
-}
-
-interface BookList {
+interface BookListProps {
   books: Book[];
   dispatch: React.Dispatch<any>;
 }
 
-const BookList: React.FC<BookList> = ({ books, dispatch }) => {
-  const handleEdit = (id: number) => {
-    const book = books.find((book) => book.id === id);
-    if (book) {
-      dispatch({
-        type: 'EDIT_BOOK',
-        payload: {
-          id: book.id,
-          title: book.title,
-          author: book.author,
-          year: book.year
-        }
-        });
-    }
+const BookList: React.FC<BookListProps> = ({ books, dispatch }) => {
+  const [bookToEdit, setBookToEdit] = useState<Book | null>(null);
+
+  const handleEdit = (book: Book) => {
+    setBookToEdit(book);
   };
 
   const handleDelete = (id: number) => {
     dispatch({ type: 'DELETE_BOOK', payload: id });
-  };   
+  };
 
   return (
     <div className="book-list-container">
+      <Form dispatch={dispatch} bookToEdit={bookToEdit} />
       <h2>Book List</h2>
       <div>
         <table className="book-table">
@@ -53,8 +40,8 @@ const BookList: React.FC<BookList> = ({ books, dispatch }) => {
                 <td>{book.author}</td>
                 <td>{book.year}</td>
                 <td>
-                    <button onClick={() => handleEdit(book.id)}>Edit</button>
-                    <button onClick={() => handleDelete(book.id)}>Delete</button>
+                  <button onClick={() => handleEdit(book)}>Edit</button>
+                  <button onClick={() => handleDelete(book.id)}>Delete</button>
                 </td>
               </tr>
             ))}
